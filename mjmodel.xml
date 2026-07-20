@@ -1,0 +1,35 @@
+<mujoco model="arm_urdf">
+  <compiler angle="radian"/>
+
+  <asset>
+    <mesh name="base_link" content_type="model/stl" file="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\/arm_urdf/meshes/base_link.STL"/>
+    <mesh name="J1_Link" content_type="model/stl" file="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/J1_Link.STL"/>
+    <mesh name="Arm1" content_type="model/stl" file="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/Arm1.STL"/>
+    <mesh name="Arm2" content_type="model/stl" file="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/Arm2.STL"/>
+    <mesh name="End_Effector" content_type="model/stl" file="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/End_Effector.STL"/>
+  </asset>
+
+  <worldbody>
+    <geom type="mesh" rgba="0.29804 0.29804 0.29804 1" mesh="base_link"/>
+    <body name="J1_Link" pos="-0.06935 -0.10429 0.051119">
+      <inertial pos="-0.0034326 0.0233874 0.0250484" quat="-0.302104 0.676338 -0.208014 0.638773" mass="0.138685" diaginertia="8.69427e-05 6.90629e-05 4.69039e-05"/>
+      <joint name="J1" pos="0 0 0" axis="0 0 -1"/>
+      <geom type="mesh" rgba="0.298039 0.298039 0.298039 1" mesh="J1_Link"/>
+      <body name="Arm1" pos="-0.010451 0.0021323 0.0475" quat="0.91471 0.0281196 -0.397915 0.0646401">
+        <inertial pos="0.071392 -0.0068575 0.00059964" quat="0.488626 0.508499 0.53065 0.470195" mass="0.057216" diaginertia="5.09875e-05 5.08079e-05 7.53583e-06"/>
+        <joint name="Arm1_Joint" pos="0 0 0" axis="0 -1 0"/>
+        <geom type="mesh" rgba="0.29804 0.29804 0.29804 1" mesh="Arm1"/>
+        <body name="Arm2" pos="0.1033 0.014919 0.0025" quat="0.789072 0 0.614301 0">
+          <inertial pos="0.052897 0.0041803 -0.0020241" quat="0.478701 0.520888 0.51982 0.478862" mass="0.029766" diaginertia="4.6255e-05 4.38397e-05 3.30644e-06"/>
+          <joint name="Arm2_joint" pos="0 0 0" axis="0 1 0"/>
+          <geom type="mesh" rgba="0.29804 0.29804 0.29804 1" mesh="Arm2"/>
+          <body name="End_Effector" pos="0.1091 0 -0.0014" quat="-3.55795e-06 -0.968622 9.12929e-07 -0.248537">
+            <inertial pos="0.024827 0.011528 0.00012821" quat="0.49557 0.483033 0.512683 0.508178" mass="0.013454" diaginertia="6.34058e-06 5.61676e-06 9.91559e-07"/>
+            <joint name="End_Effector_joint" pos="0 0 0" axis="0 1 0"/>
+            <geom type="mesh" rgba="0.29804 0.29804 0.29804 1" mesh="End_Effector"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>

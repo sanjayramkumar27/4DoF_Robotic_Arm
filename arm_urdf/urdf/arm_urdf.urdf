@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="arm_urdf">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.05794 0.0087823 0.082797"
+        rpy="0 0 0" />
+      <mass
+        value="0.21296" />
+      <inertia
+        ixx="0.00033716"
+        ixy="4.5412E-07"
+        ixz="4.3554E-07"
+        iyy="0.00050553"
+        iyz="-6.1174E-06"
+        izz="0.00018645" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="PLA">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\/arm_urdf/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="J1_Link">
+    <inertial>
+      <origin
+        xyz="-0.00343260331089945 0.0233874228400388 0.0250484173594939"
+        rpy="0 0 0" />
+      <mass
+        value="0.13868540642966" />
+      <inertia
+        ixx="4.75260790912805E-05"
+        ixy="-4.29616783537029E-06"
+        ixz="1.31667548923574E-06"
+        iyy="7.65727242226125E-05"
+        iyz="-8.80553511008645E-06"
+        izz="7.88107024645633E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/J1_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.298039215686275 0.298039215686275 0.298039215686275 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/J1_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J1"
+    type="revolute">
+    <origin
+      xyz="-0.06935 -0.10429 0.051119"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="J1_Link" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Arm1">
+    <inertial>
+      <origin
+        xyz="0.071392 -0.0068575 0.00059964"
+        rpy="0 0 0" />
+      <mass
+        value="0.057216" />
+      <inertia
+        ixx="7.8152E-06"
+        ixy="-9.0931E-08"
+        ixz="3.4645E-06"
+        iyy="5.0987E-05"
+        iyz="1.6502E-12"
+        izz="5.0529E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/Arm1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/Arm1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Arm1_Joint"
+    type="revolute">
+    <origin
+      xyz="-0.010451 0.0021323 0.0475"
+      rpy="0 -0.82065 0.1411" />
+    <parent
+      link="J1_Link" />
+    <child
+      link="Arm1" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Arm2">
+    <inertial>
+      <origin
+        xyz="0.052897 0.0041803 -0.0020241"
+        rpy="0 0 0" />
+      <mass
+        value="0.029766" />
+      <inertia
+        ixx="3.5862E-06"
+        ixy="3.6807E-08"
+        ixz="3.3556E-06"
+        iyy="4.6255E-05"
+        iyz="-2.1176E-22"
+        izz="4.356E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/Arm2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/Arm2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Arm2_joint"
+    type="revolute">
+    <origin
+      xyz="0.1033 0.014919 0.0025"
+      rpy="0 1.323 0" />
+    <parent
+      link="Arm1" />
+    <child
+      link="Arm2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="End_Effector">
+    <inertial>
+      <origin
+        xyz="0.024827 0.011528 0.00012821"
+        rpy="0 0 0" />
+      <mass
+        value="0.013454" />
+      <inertia
+        ixx="1.0014E-06"
+        ixy="-2.2603E-07"
+        ixz="-3.4918E-08"
+        iyy="6.3308E-06"
+        iyz="-1.3943E-08"
+        izz="5.6167E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/End_Effector.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="C:\Users\santh\Desktop\Robottic_Arm\vs\Robotic_Arm\arm_urdf/meshes/End_Effector.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="End_Effector_joint"
+    type="revolute">
+    <origin
+      xyz="0.1091 0 -0.0014"
+      rpy="-3.1416 -0.50234 0" />
+    <parent
+      link="Arm2" />
+    <child
+      link="End_Effector" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>

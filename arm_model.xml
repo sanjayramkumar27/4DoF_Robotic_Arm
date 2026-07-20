@@ -1,0 +1,64 @@
+<mujoco model="arm4dof">
+  <!--
+    4-DOF serial arm: base_yaw -> shoulder_pitch -> elbow_pitch -> wrist_pitch -> pen tip.
+
+    PLACEHOLDER VALUES — replace with real measurements from your SolidWorks assembly:
+      BASE_HEIGHT : base joint axis height to shoulder joint axis
+      L2          : shoulder joint axis to elbow joint axis
+      L3          : elbow joint axis to wrist joint axis
+      L4          : wrist joint axis to pen tip
+    Measure along the link centerlines in the assembly, in meters.
+
+    Joint ranges below come from your calibration data (pot-response boundaries),
+    centered at 0 for now as a placeholder. You need to replace 'ref' (and possibly
+    flip sign) once you know what pot reading corresponds to which physical pose —
+    see pot_angle_to_sim_rad() in ik_draw.py for where this mapping lives.
+  -->
+  <compiler angle="radian" autolimits="true"/>
+  <option gravity="0 0 -9.81"/>
+
+  <default>
+    <joint damping="0.2" frictionloss="0.05"/>
+    <geom type="capsule" size="0.012" rgba="0.7 0.75 0.8 1"/>
+  </default>
+
+  <worldbody>
+    <geom name="floor" type="plane" size="0.5 0.5 0.01" rgba="0.9 0.9 0.85 1"/>
+
+    <body name="base" pos="0 0 0">
+      <geom type="cylinder" size="0.04 0.02" rgba="0.3 0.3 0.35 1"/>
+      <joint name="base_yaw" type="hinge" axis="0 0 1" range="-1.833 1.833"/>
+      <!-- range = +-105 deg placeholder, from A0 span (230-20=210 deg) -->
+
+      <body name="shoulder_link" pos="0 0 0.05">
+        <!-- BASE_HEIGHT = 0.05 placeholder -->
+        <joint name="shoulder_pitch" type="hinge" axis="0 1 0" range="-1.571 1.571"/>
+        <!-- range = +-90 deg placeholder, from A1 span (201-21=180 deg) -->
+        <geom fromto="0 0 0  0.12 0 0"/>
+        <!-- L2 = 0.12 placeholder -->
+
+        <body name="elbow_link" pos="0.12 0 0">
+          <joint name="elbow_pitch" type="hinge" axis="0 1 0" range="-2.007 2.007"/>
+          <!-- range = +-115 deg placeholder, from A2 span (110-(-120)=230 deg) -->
+          <geom fromto="0 0 0  0.10 0 0"/>
+          <!-- L3 = 0.10 placeholder -->
+
+          <body name="wrist_link" pos="0.10 0 0">
+            <joint name="wrist_pitch" type="hinge" axis="0 1 0" range="-1.571 1.571"/>
+            <!-- range = +-90 deg placeholder, SG90 standard 0-180 centered at 90 -->
+            <geom fromto="0 0 0  0.06 0 0" size="0.006"/>
+            <!-- L4 = 0.06 placeholder, wrist axis to pen tip -->
+            <site name="pen_tip" pos="0.06 0 0" size="0.004" rgba="1 0 0 1"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="act_base_yaw" joint="base_yaw" kp="15" ctrlrange="-1.833 1.833"/>
+    <position name="act_shoulder" joint="shoulder_pitch" kp="15" ctrlrange="-1.571 1.571"/>
+    <position name="act_elbow" joint="elbow_pitch" kp="15" ctrlrange="-2.007 2.007"/>
+    <position name="act_wrist" joint="wrist_pitch" kp="8" ctrlrange="-1.571 1.571"/>
+  </actuator>
+</mujoco>

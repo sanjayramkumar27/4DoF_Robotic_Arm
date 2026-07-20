@@ -4,11 +4,11 @@ import pyvista as pv
 import threading
 import time
 
-# ---------- SERIAL ----------
+
 ser = serial.Serial('COM3', 115200)
 ser.timeout = 0.1
 
-# ---------- HOMOGENEOUS TRANSFORMS ----------
+
 def h1(t1):
     return np.array([
         [np.cos(t1), -np.sin(t1), 0, 0],
@@ -45,7 +45,6 @@ def h5():
         [0, 0, 0, 1]
     ])
 
-# ---------- FORWARD KINEMATICS ----------
 def forward_kinematics(t1, t2, t3, t4):
     T0 = np.eye(4)
     T1 = T0 @ h1(t1)
@@ -59,11 +58,11 @@ def forward_kinematics(t1, t2, t3, t4):
     ]
     return positions, T5
 
-# ---------- SHARED STATE ----------
+
 latest_positions = [None]
 lock = threading.Lock()
 
-# ---------- SERIAL THREAD ----------
+
 def serial_thread():
     while True:
         try:
@@ -81,7 +80,7 @@ def serial_thread():
         except Exception as e:
             print("Error:", e)
 
-# ---------- PYVISTA SETUP ----------
+
 pv.global_theme.background = '#0a0a1a'
 
 NUM_LINKS  = 5
@@ -95,7 +94,7 @@ plotter = pv.Plotter(window_size=[900, 700])
 plotter.add_axes()
 plotter.camera_position = [(600, 400, 400), (50, 0, 100), (0, 0, 1)]
 
-# ---------- PRE-CREATE MESHES (never removed, just overwritten) ----------
+
 link_meshes  = []
 joint_meshes = []
 
@@ -110,7 +109,7 @@ for i in range(NUM_JOINTS):
     plotter.add_mesh(sph, color=joint_colors[i], smooth_shading=True)
     joint_meshes.append(sph)
 
-# ---------- UPDATE GEOMETRY IN-PLACE (no flash!) ----------
+
 def update_scene():
     with lock:
         positions = latest_positions[0]
@@ -126,7 +125,7 @@ def update_scene():
             direction = np.array([0, 0, 1], dtype=float)
             length = 0.01
 
-        # Build new geometry and copy points/cells into existing mesh
+        
         new_cyl = pv.Cylinder(center=(p0 + p1) / 2, direction=direction,
                               radius=4, height=length, resolution=20)
         link_meshes[i].copy_from(new_cyl)
@@ -135,7 +134,7 @@ def update_scene():
         new_sph = pv.Sphere(radius=joint_sizes[i], center=np.array(p, dtype=float))
         joint_meshes[i].copy_from(new_sph)
 
-# ---------- START ----------
+
 t = threading.Thread(target=serial_thread, daemon=True)
 t.start()
 
