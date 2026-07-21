@@ -21,13 +21,13 @@ def init_controller(model,data):
 
 def controller(model, data):
     #put the controller here. This function is called inside the simulation.
-    pos_des = [110, 110.0, 108.219]
+    '''pos_des = [100, 0.0, 100.0]
     pos_des = np.array(pos_des)
     x = pos_des[0]
-    y = pos_des[1] + 9.744
+    y = pos_des[1] - 9.744/2
     z = pos_des[2]
-    q1 = -np.atan2(y, x)
-    x1 = np.sqrt(x**2+y**2) - 45
+    q1 = np.atan2(y, x)
+    x1 = np.sqrt(x**2+y**2) + 37
     z1 = z -  108.219
     D = (x1**2+z1**2 - 103.3**2 - 109.1**2)/(2*103.3*109.1)
     q3 = np.acos(D) 
@@ -35,8 +35,9 @@ def controller(model, data):
     q4 = -q2+q3
     q = [q1,q2,q3,q4]
     data.ctrl = q
-    #print(np.rad2deg(q))
-    print(data.site_xpos[0]*1000)
+    print(np.rad2deg(q))
+    print(pos_des-data.site_xpos[0]*1000)'''
+    pass
 
 
 
@@ -153,38 +154,57 @@ init_controller(model,data)
 data.qpos = np.deg2rad([0, 0, 0, 0])
 data.qvel[:] = 0
 mj.mj_forward(model, data)
-
+print(data.site_xpos[0])
 #set the controller
 mj.set_mjcb_control(controller)
 
-while not glfw.window_should_close(window):
-    time_prev = data.time
 
-    while (data.time - time_prev < 1.0/60.0):
-        mj.mj_step(model, data)
+rng = np.random.default_rng(10)
+lows = model.jnt_range[:, 0]
+highs = model.jnt_range[:, 1]
 
-    if (data.time>=simend):
-        break;
+n_samples = 1000
+pts = np.zeros((n_samples, 3))
+for i in range(n_samples):
+    q = rng.uniform(lows, highs)
+    data.qpos[:model.nq] = q
+    mj.mj_forward(model, data)
+    pts[i] = data.site_xpos[0]
 
-    # get framebuffer viewport
-    viewport_width, viewport_height = glfw.get_framebuffer_size(
-        window)
-    viewport = mj.MjrRect(0, 0, viewport_width, viewport_height)
 
-    #print camera configuration (help to initialize the view)
-    if (print_camera_config==1):
-        print('cam.azimuth =',cam.azimuth,';','cam.elevation =',cam.elevation,';','cam.distance = ',cam.distance)
-        print('cam.lookat =np.array([',cam.lookat[0],',',cam.lookat[1],',',cam.lookat[2],'])')
+print("Reachable pen-tip bounding box:")
+for axis, name in zip(range(3), "xyz"):
+    print(f"  {name}: [{pts[:, axis].min():.3f}, {pts[:, axis].max():.3f}]")
+centroid = pts.mean(axis=0)
+print(f"  centroid: {centroid}")
 
-    # Update scene and render
-    mj.mjv_updateScene(model, data, opt, None, cam,
-                       mj.mjtCatBit.mjCAT_ALL.value, scene)
-    mj.mjr_render(viewport, scene, context)
 
-    # swap OpenGL buffers (blocking call due to v-sync)
-    glfw.swap_buffers(window)
+import matplotlib.pyplot as plt
 
-    # process pending GUI events, call GLFW callbacks
-    glfw.poll_events()
+fig = plt.figure(figsize=(12, 4))
 
-glfw.terminate()
+# 3D view
+ax1 = fig.add_subplot(131, projection="3d")
+ax1.scatter(pts[:, 0], pts[:, 1], pts[:, 2], s=2, alpha=0.3)
+ax1.set_xlabel("x"); ax1.set_ylabel("y"); ax1.set_zlabel("z")
+ax1.set_title("3D reachable cloud")
+
+# top-down (x-y) — useful for picking where on a table to draw
+ax2 = fig.add_subplot(132)
+ax2.scatter(pts[:, 0], pts[:, 1], s=2, alpha=0.3)
+ax2.set_xlabel("x"); ax2.set_ylabel("y")
+ax2.set_aspect("equal")
+ax2.set_title("top-down (x-y)")
+
+# side view (x-z) — useful for picking table height
+ax3 = fig.add_subplot(133)
+ax3.scatter(pts[:, 0], pts[:, 2], s=2, alpha=0.3)
+ax3.set_xlabel("x"); ax3.set_ylabel("z")
+ax3.set_aspect("equal")
+ax3.set_title("side view (x-z)")
+
+fig.tight_layout()
+fig.savefig("workspace_cloud.png", dpi=150)
+
+
+

@@ -1,0 +1,57 @@
+Tue Jul 21 09:01:43 2026
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.0080.
+
+Tue Jul 21 09:10:57 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:11:07 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:11:42 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:11:49 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:11:58 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:12:10 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:12:19 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:13:06 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:13:33 2026
+ERROR: Python exception raised
+
+Tue Jul 21 09:13:42 2026
+ERROR: Python exception raised
+
+Tue Jul 21 11:27:30 2026
+ERROR: Python exception raised
+
+Tue Jul 21 11:27:58 2026
+ERROR: Python exception raised
+
+Tue Jul 21 11:28:13 2026
+ERROR: Python exception raised
+
+Tue Jul 21 11:28:42 2026
+ERROR: Python exception raised
+
+Tue Jul 21 11:28:55 2026
+ERROR: Python exception raised
+
+Tue Jul 21 12:33:29 2026
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 1. The simulation is unstable. Time = 0.0000.
+
+Tue Jul 21 13:50:46 2026
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 1. The simulation is unstable. Time = 0.0000.
+
+Tue Jul 21 14:43:33 2026
+WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 1. The simulation is unstable. Time = 0.0000.
+
