@@ -2,6 +2,7 @@ import mujoco as mj
 from mujoco.glfw import glfw
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 xml_path = 'mjmodel.xml' #xml file (assumes this is in the same folder as this file)
 simend = 50 #simulation time
@@ -20,9 +21,9 @@ def init_controller(model,data):
     pass
 
 def get_path(model, data):
-    T=2
-    x = 30*np.sin(data.time/T*2*np.pi) + 150
-    z = 30*np.cos(data.time/T*2*np.pi) + 200
+    T=5
+    x = 20*np.sin(data.time/T*2*np.pi) + 110
+    z = 20*np.cos(data.time/T*2*np.pi) + 110
 
     return x,z
 
@@ -30,8 +31,8 @@ def controller(model, data):
     #put the controller here. This function is called inside the simulation.
     lows = model.jnt_range[:, 0]
     highs = model.jnt_range[:, 1]
-    xd, zd = get_path(model, data)
-    pos_des = [xd, 0.0, zd]
+    xd, yd = get_path(model, data)
+    pos_des = [xd, yd, 60]
     pos_des = np.array(pos_des)
     x = pos_des[0]
     y = pos_des[1] + 9.744
@@ -180,13 +181,15 @@ mj.mj_forward(model, data)
 
 #set the controller
 mj.set_mjcb_control(controller)
-
+x = []
+y=[]
 while not glfw.window_should_close(window):
     time_prev = data.time
 
     while (data.time - time_prev < 1.0/60.0):
-        mj.mj_step(model, data)
-
+        mj.mj_step(model, data)  
+        x.append(data.site_xpos[0][0])
+        y.append(data.site_xpos[0][1])
     if (data.time>=simend):
         break;
 
@@ -224,3 +227,7 @@ while not glfw.window_should_close(window):
     glfw.poll_events()
 video.release()
 glfw.terminate()
+
+
+plt.plot(x,y)
+plt.show()
