@@ -163,7 +163,7 @@ rng = np.random.default_rng(10)
 lows = model.jnt_range[:, 0]
 highs = model.jnt_range[:, 1]
 
-n_samples = 1000
+n_samples = 10000
 pts = np.zeros((n_samples, 3))
 for i in range(n_samples):
     q = rng.uniform(lows, highs)

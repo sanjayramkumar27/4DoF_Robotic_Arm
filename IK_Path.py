@@ -19,9 +19,19 @@ def init_controller(model,data):
     #initialize the controller here. This function is called once, in the beginning
     pass
 
+def get_path(model, data):
+    T=2
+    x = 30*np.sin(data.time/T*2*np.pi) + 150
+    z = 30*np.cos(data.time/T*2*np.pi) + 200
+
+    return x,z
+
 def controller(model, data):
     #put the controller here. This function is called inside the simulation.
-    pos_des = [110, 110.0, 108.219]
+    lows = model.jnt_range[:, 0]
+    highs = model.jnt_range[:, 1]
+    xd, zd = get_path(model, data)
+    pos_des = [xd, 0.0, zd]
     pos_des = np.array(pos_des)
     x = pos_des[0]
     y = pos_des[1] + 9.744
@@ -34,9 +44,9 @@ def controller(model, data):
     q2 = np.atan2(z1,x1) + np.atan2((109.1*np.sin(q3)),(103.3+109.1*np.cos(q3))) 
     q4 = -q2+q3
     q = [q1,q2,q3,q4]
+    if not np.greater(highs,q).all() and not np.less(lows, q).all():
+        print("Position outside workspace")
     data.ctrl = q
-    #print(np.rad2deg(q))
-    print(data.site_xpos[0]*1000)
 
 
 
@@ -148,6 +158,20 @@ glfw.set_scroll_callback(window, scroll)
 cam.azimuth = 88.19999999999995 ; cam.elevation = -15.799999999999974 ; cam.distance =  0.5653395162666803
 cam.lookat =np.array([ -0.007058707059627407 , -0.0009162690436801375 , 0.0568240777320992 ])
 
+import cv2
+
+fps = 60
+
+viewport_width, viewport_height = glfw.get_framebuffer_size(window)
+
+fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+video = cv2.VideoWriter(
+    'jump.mp4',
+    fourcc,
+    fps,
+    (viewport_width, viewport_height)
+)
+
 #initialize the controller
 init_controller(model,data)
 data.qpos = np.deg2rad([0, 0, 0, 0])
@@ -180,11 +204,23 @@ while not glfw.window_should_close(window):
     mj.mjv_updateScene(model, data, opt, None, cam,
                        mj.mjtCatBit.mjCAT_ALL.value, scene)
     mj.mjr_render(viewport, scene, context)
+    rgb = np.empty((viewport.height, viewport.width, 3), dtype=np.uint8)
+    depth = np.empty((viewport.height, viewport.width), dtype=np.float32)
+
+    mj.mjr_readPixels(rgb, depth, viewport, context)
+
+    # OpenGL image is upside down
+    rgb = np.flipud(rgb)
+
+    # OpenCV expects BGR
+    frame = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+
+    video.write(frame)
 
     # swap OpenGL buffers (blocking call due to v-sync)
     glfw.swap_buffers(window)
 
     # process pending GUI events, call GLFW callbacks
     glfw.poll_events()
-
+video.release()
 glfw.terminate()
