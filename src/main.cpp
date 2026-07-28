@@ -5,31 +5,31 @@
 #define J2 A1
 #define J3 A2
 
-#define IN1J1 3
-#define IN2J1 11
+#define IN1J1 6
+#define IN2J1 7
 
-#define IN1J2 9
-#define IN2J2 10
+#define IN1J2 3
+#define IN2J2 2
 
-#define IN1J3 6
-#define IN2J3 5
+#define IN1J3 5
+#define IN2J3 4
 
 
-float kp1=5;
-float kd1=30;
+float kp1=2;
+float kd1=0;
 float ki1=0;
 float prev_error_1=0;
 float inte_1=0;
 
-float kp2=11;
-float kd2=25;
+float kp2=2;
+float kd2=8;
 float ki2=0;
 float prev_error_2=0;
 float inte_2=0;
 
 
-float kp3=11;
-float kd3=30;
+float kp3=3;
+float kd3=10;
 float ki3=0;
 float prev_error_3=0;
 float inte_3=0;
@@ -244,24 +244,29 @@ double t3[100] = {
 void move_joint(int pin, float set, int IN1, int IN2, float &prev_error, float &inte, float kp, float kd, float ki){
   float error=0;
   if (pin == J1){
-    error = set -map(analogRead(pin), 1023, 0, 0, 180);
+    error = -set + map(analogRead(pin), 0, 1023, 230, 20);
   }
   else if (pin ==J2){
-    error = set - map(analogRead(pin), 1023, 224, 0, 180)-15;
+    error = -set + map(analogRead(A1), 156, 1023, 210, 30)-15;
   }
   else{
-    error = set - map(analogRead(pin), 1023, 0, -20, 200)+90;
+    error = -set + map(analogRead(A2), 0, 1023, 110, -120);
   }
   int out = kp*error + kd*(error-prev_error)+ki*inte;
-  out = constrain(out, -100, 100);
+  // if (abs(error) >= 5)
+  //   out = kp*error + kd*(error-prev_error)+ki*inte;
+  // else{
+  //   out = 0;
+  // }
+  out = constrain(out, -50, 50);
   Serial.println(out);
-  if(out<0){
+  if(out<=0){
     analogWrite(IN1, abs(out));
-    analogWrite(IN2, 0);
+    digitalWrite(IN2, LOW);
   }
   else{
-    analogWrite(IN2, abs(out));
-    analogWrite(IN1, 0);
+    analogWrite(IN1, abs(out));
+    digitalWrite(IN2, HIGH);
   }
   prev_error = error;
   inte+=error;
@@ -274,10 +279,35 @@ void setup() {
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
+
+  pinMode(IN1J1,OUTPUT);
+  pinMode(IN2J1,OUTPUT);
+
+  pinMode(IN1J2,OUTPUT);
+  pinMode(IN2J2,OUTPUT);
+
+  pinMode(IN1J3,OUTPUT);
+  pinMode(IN2J3,OUTPUT);
 }
 
 void loop() {
-  
+  //move_joint(J2, 90, IN1J2, IN2J2, prev_error_2, inte_2, kp2, kd2, ki2);
+  //move_joint(J3, 90, IN1J3, IN2J3, prev_error_3, inte_3, kp3, kd3, ki3);
+  // for(int i=50;i<=150;i++){
+  //   unsigned long t = millis();
+  //   while(millis()-t < 20){
+  //       move_joint(J2, i, IN1J2, IN2J2, prev_error_2, inte_2, kp2, kd2, ki2);
+  //   }
+  // }
+    
+
+  // for(int i=150;i>=50;i--){
+  //   unsigned long t = millis();
+  //   while(millis()-t < 20){
+  //       move_joint(J2, i, IN1J2, IN2J2, prev_error_2, inte_2, kp2, kd2, ki2);
+  //   }
+  // }
+    
 //   for(int i = 0; i < 100; i++){  
 //   move_joint(J2, t2[0], IN1J2, IN2J2, prev_error_2, inte_2, kp2, kd2, ki2);
 //   move_joint(J3, t3[0], IN1J3, IN2J3, prev_error_3, inte_3, kp3, kd3, ki3);
@@ -306,7 +336,7 @@ void loop() {
 
   Serial.print(map(analogRead(A0), 0, 1023, 230, 20));
   Serial.print(",");
-  Serial.print(map(analogRead(A1), 156, 1023, 210, 30)-9);
+  Serial.print(map(analogRead(A1), 156, 1023, 210, 30)-15);
   Serial.print(",");
   Serial.print(map(analogRead(A2), 0, 1023, 110, -120));
   Serial.print(",");
