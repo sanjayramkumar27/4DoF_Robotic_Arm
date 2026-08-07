@@ -24,3 +24,6 @@ Active. Current work is a three-trace tracking error analysis comparing the comm
 ## Tools
 
 Python, MuJoCo (MJCF), PlatformIO/Arduino.
+
+
+[Watch the demo]([https://youtu.be/VIDEO_ID](https://youtu.be/enjijNBTH5s))
