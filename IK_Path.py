@@ -22,8 +22,8 @@ def init_controller(model,data):
 
 def get_path(model, data):
     T=5
-    x = 20*np.sin(data.time/T*2*np.pi) + 110
-    z = 20*np.cos(data.time/T*2*np.pi) + 110
+    x = 10*np.sin(data.time/T*2*np.pi) + 120
+    z = 10*np.cos(data.time/T*2*np.pi) + 120
 
     return x,z
 
