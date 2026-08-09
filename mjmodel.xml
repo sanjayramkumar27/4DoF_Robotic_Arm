@@ -42,10 +42,10 @@
   </worldbody>
 
     <actuator>
-    <position name="act_base_yaw" joint="J1" kp="5" kv =".2" ctrlrange="-4.01425 0.3490"/>
-    <position name="act_shoulder" joint="Arm1_Joint" kp="5" kv =".2" ctrlrange="0.366519 3.5081"/>
-    <position name="act_elbow" joint="Arm2_joint" kp="5" kv =".2" ctrlrange="-1.91986 2.0943"/>
-    <position name="act_wrist" joint="End_Effector_joint" kp="5" kv =".2" ctrlrange="-1.571 1.571"/>
+    <position name="act_base_yaw" joint="J1" kp="10" kv =".5" ctrlrange="-4.01425 0.3490"/>
+    <position name="act_shoulder" joint="Arm1_Joint" kp="10" kv =".5" ctrlrange="0.366519 3.5081"/>
+    <position name="act_elbow" joint="Arm2_joint" kp="10" kv =".5" ctrlrange="-1.91986 2.0943"/>
+    <position name="act_wrist" joint="End_Effector_joint" kp="10" kv =".5" ctrlrange="-1.571 1.571"/>
   </actuator>
 
 

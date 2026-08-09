@@ -23,14 +23,14 @@ lasty = 0
 radius = 25
 x_off = 120
 z_off = 120
-
+T = 3
 
 def init_controller(model, data):
     pass
 
 
 def get_path(model, data):
-    T = 5
+    
     x = radius * np.sin(data.time / T * 2 * np.pi) + x_off
     z = radius * np.cos(data.time / T * 2 * np.pi) + z_off
     return x, z
@@ -75,9 +75,9 @@ def precompute_reference_path(model, n=120):
     shadow = mj.MjData(model)
     pts = []
     for i in range(n):
-        t = i / n * 5.0
-        xd = radius * np.sin(t / 5.0 * 2 * np.pi) + x_off
-        zd = radius * np.cos(t / 5.0 * 2 * np.pi) + z_off
+        t = i / n * T
+        xd = radius * np.sin(t / T * 2 * np.pi) + x_off
+        zd = radius * np.cos(t / T * 2 * np.pi) + z_off
         q = ik_from_task_target(xd, zd)
         if q is None:
             continue
