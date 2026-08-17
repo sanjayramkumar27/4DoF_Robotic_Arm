@@ -20,7 +20,7 @@ button_right = False
 lastx = 0
 lasty = 0
 
-radius = 25
+radius = 20
 x_off = 120
 z_off = 120
 T = 3
@@ -52,6 +52,17 @@ def ik_from_task_target(xd, zd):
     q4 = -q2 + q3
     return np.array([q1, q2, q3, q4])
 
+def q_from_jac(xd,zd):
+    pos_des = 1e-3*np.array([xd,zd,60])
+    jacp = np.zeros((3, model.nv))
+    jacr = np.zeros((3, model.nv))
+    mj.mj_jacSite(model,data,jacp,jacr,0)
+    J = jacp
+    lam = 0.01
+    error = pos_des - data.site_xpos[0]
+    A = J @ J.T + lam**2 * np.eye(J.shape[0])
+    dq = J.T @ np.linalg.solve(A, error)
+    return dq
 
 last_q = None  
 
@@ -61,14 +72,14 @@ def controller(model, data):
     lows = model.jnt_range[:, 0]
     highs = model.jnt_range[:, 1]
     xd, zd = get_path(model, data)
-    q = ik_from_task_target(xd, zd)
-    if q is None:
-        return
-    out_of_range = np.any(q > highs) or np.any(q < lows)
+    dq = q_from_jac(xd, zd)
+    q_current = data.qpos[:4].copy()
+    q_des = q_current + dq
+    out_of_range = np.any(q_des > highs) or np.any(q_des < lows)
     if out_of_range:
-        print(f"t={data.time:.2f}s: commanded joint(s) outside range -> {np.round(q, 3)}")
-    data.ctrl = q
-    last_q = q
+        print(f"t={data.time:.2f}s: commanded joint(s) outside range -> {np.round(q_des, 3)}")
+    data.ctrl = q_des
+    last_q = q_des.copy()
 
 
 def precompute_reference_path(model, n=120):
@@ -196,10 +207,9 @@ while not glfw.window_should_close(window):
     y_hist.append(data.site_xpos[0][1])
 
     if last_q is not None:
-        shadow_data.qpos[:] = last_q
-        mj.mj_kinematics(model, shadow_data)
-        commanded_pos = shadow_data.site_xpos[0].copy()
-        err = np.linalg.norm(data.site_xpos[0] - commanded_pos)
+        xd,yd = get_path(model, data)
+        reference_pos = 1e-3 * np.array([xd,yd,60.0])
+        err = np.linalg.norm(data.site_xpos[0] - reference_pos)
         trail.append(data.site_xpos[0].copy())
         errors.append(err)
 

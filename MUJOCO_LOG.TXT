@@ -70,3 +70,6 @@ WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 1. The simulation is unstabl
 Tue Jul 21 16:00:38 2026
 WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 1. The simulation is unstable. Time = 0.0000.
 
+Mon Aug 17 18:43:23 2026
+ERROR: Python exception raised
+
