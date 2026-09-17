@@ -20,10 +20,10 @@ button_right = False
 lastx = 0
 lasty = 0
 
-radius = 20
+radius = 10
 x_off = 120
 z_off = 120
-T = 3
+T = 10
 
 def init_controller(model, data):
     pass
@@ -38,12 +38,12 @@ def get_path(model, data):
 
 def ik_from_task_target(xd, zd):
     pos_des = np.array([xd, zd, 60])
-    x = pos_des[0]
-    y = pos_des[1] + 9.744
+    x = pos_des[0] + 6
+    y = pos_des[1] + 13
     z = pos_des[2]
     q1 = -np.atan2(y, x)
     x1 = np.sqrt(x**2 + y**2) - 45
-    z1 = z - 108.219
+    z1 = z - 108.619
     D = (x1**2 + z1**2 - 103.3**2 - 109.1**2) / (2 * 103.3 * 109.1)
     if abs(D) > 1:
         return None
@@ -81,21 +81,30 @@ def controller(model, data):
     data.ctrl = q_des
     last_q = q_des.copy()
 
+def controller1(model, data):
+    global last_q
+    lows = model.jnt_range[:, 0]
+    highs = model.jnt_range[:, 1]
+    xd, zd = get_path(model, data)
+    q = ik_from_task_target(xd, zd)
+    if q is None:
+        return
+    out_of_range = np.any(q > highs) or np.any(q < lows)
+    if out_of_range:
+        print(f"t={data.time:.2f}s: commanded joint(s) outside range -> {np.round(q, 3)}")
+    data.ctrl = q
+    last_q = q
+
 
 def precompute_reference_path(model, n=120):
-    shadow = mj.MjData(model)
     pts = []
     for i in range(n):
         t = i / n * T
         xd = radius * np.sin(t / T * 2 * np.pi) + x_off
-        zd = radius * np.cos(t / T * 2 * np.pi) + z_off
-        q = ik_from_task_target(xd, zd)
-        if q is None:
-            continue
-        shadow.qpos[:] = q
-        mj.mj_kinematics(model, shadow)
-        pts.append(shadow.site_xpos[0].copy())
-    pts.append(pts[0])  # close the loop
+        yd = radius * np.cos(t / T * 2 * np.pi) + z_off 
+        p = 1e-3 * np.array([xd,yd,60.0])
+        pts.append(p)
+    pts.append(pts[0])
     return np.array(pts)
 
 
@@ -188,7 +197,7 @@ q1 = ik_from_task_target(x1, y1)
 data.qpos = q1
 data.qvel[:] = 0
 mj.mj_forward(model, data)
-mj.set_mjcb_control(controller)
+mj.set_mjcb_control(controller1)
 
 reference_path = precompute_reference_path(model)
 shadow_data = mj.MjData(model)  # reused each frame for the commanded-target FK
@@ -210,6 +219,14 @@ while not glfw.window_should_close(window):
         xd,yd = get_path(model, data)
         reference_pos = 1e-3 * np.array([xd,yd,60.0])
         err = np.linalg.norm(data.site_xpos[0] - reference_pos)
+        component_error = data.site_xpos[0] - reference_pos
+
+        print(
+            f"Ex = {component_error[0]*1000:.2f} mm, "
+            f"Ey = {component_error[1]*1000:.2f} mm, "
+            f"Ez = {component_error[2]*1000:.2f} mm, "
+            f"E3D = {np.linalg.norm(component_error)*1000:.2f} mm"
+        )
         trail.append(data.site_xpos[0].copy())
         errors.append(err)
 
