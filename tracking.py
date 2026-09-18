@@ -6,9 +6,9 @@ import cv2
 from collections import deque
 import matplotlib.pyplot as plt
 
-xml_path = 'mjmodel.xml'
+xml_path = 'arm_model_nolimit.xml'
 
-simend = 10             
+simend = 20             
 ORBIT_CAMERA = False      
 ORBIT_DEG_PER_SEC = 6.0
 TRAIL_MAXLEN = 500        
@@ -20,9 +20,9 @@ button_right = False
 lastx = 0
 lasty = 0
 
-radius = 10
-x_off = 120
-z_off = 120
+radius = 15
+x_off = 100
+z_off = 100
 T = 10
 
 def init_controller(model, data):
@@ -76,8 +76,8 @@ def controller(model, data):
     q_current = data.qpos[:4].copy()
     q_des = q_current + dq
     out_of_range = np.any(q_des > highs) or np.any(q_des < lows)
-    if out_of_range:
-        print(f"t={data.time:.2f}s: commanded joint(s) outside range -> {np.round(q_des, 3)}")
+    '''if out_of_range:
+        print(f"t={data.time:.2f}s: commanded joint(s) outside range -> {np.round(q_des, 3)}")'''
     data.ctrl = q_des
     last_q = q_des.copy()
 
@@ -90,8 +90,8 @@ def controller1(model, data):
     if q is None:
         return
     out_of_range = np.any(q > highs) or np.any(q < lows)
-    if out_of_range:
-        print(f"t={data.time:.2f}s: commanded joint(s) outside range -> {np.round(q, 3)}")
+    '''if out_of_range:
+        print(f"t={data.time:.2f}s: commanded joint(s) outside range -> {np.round(q, 3)}")'''
     data.ctrl = q
     last_q = q
 
@@ -197,7 +197,7 @@ q1 = ik_from_task_target(x1, y1)
 data.qpos = q1
 data.qvel[:] = 0
 mj.mj_forward(model, data)
-mj.set_mjcb_control(controller1)
+mj.set_mjcb_control(controller)
 
 reference_path = precompute_reference_path(model)
 shadow_data = mj.MjData(model)  # reused each frame for the commanded-target FK
