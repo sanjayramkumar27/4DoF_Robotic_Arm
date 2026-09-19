@@ -58,7 +58,7 @@ def q_from_jac(xd,zd):
     jacr = np.zeros((3, model.nv))
     mj.mj_jacSite(model,data,jacp,jacr,0)
     J = jacp
-    lam = 0.01
+    lam = 0.1
     error = pos_des - data.site_xpos[0]
     A = J @ J.T + lam**2 * np.eye(J.shape[0])
     dq = J.T @ np.linalg.solve(A, error)
@@ -108,7 +108,7 @@ def precompute_reference_path(model, n=120):
     return np.array(pts)
 
 
-def add_path_segments(scene, points, rgba, radius=0.0008):
+def add_path_segments(scene, points, rgba, radius=0.0002):
     n = len(points)
     rgba = np.array(rgba, dtype=np.float32)
     for i in range(n - 1):
@@ -188,7 +188,7 @@ base_azimuth = cam.azimuth
 
 fps = 60
 viewport_width, viewport_height = glfw.get_framebuffer_size(window)
-video = cv2.VideoWriter('jump.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps,
+video = cv2.VideoWriter('track.mp4', cv2.VideoWriter_fourcc(*'mp4v'), fps,
                          (viewport_width, viewport_height))
 
 init_controller(model, data)

@@ -73,3 +73,6 @@ WARNING: Nan, Inf or huge value in CTRL at ACTUATOR 1. The simulation is unstabl
 Mon Aug 17 18:43:23 2026
 ERROR: Python exception raised
 
+Sat Sep 19 11:16:08 2026
+WARNING: Nan, Inf or huge value in QPOS at DOF 0. The simulation is unstable. Time = 0.0000.
+
